@@ -1,0 +1,35 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  KUBECTL_BIN_DIR: ./kubectl
+  ISTIOCTL_BIN_DIR: ./istioctl
+
+tasks:
+# KUBECTL
+  kubectl:install:1.18.8:
+    desc: install kubectl
+    cmds:
+      - mkdir -p {{.KUBECTL_BIN_DIR}}/{{.KUBECTL_VERSION}} | true
+      - curl -o {{.KUBECTL_BIN}} -LO https://storage.googleapis.com/kubernetes-release/release/v{{.KUBECTL_VERSION}}/bin/{{OS}}/{{ARCH}}/kubectl
+      - chmod 755 {{.KUBECTL_BIN}}
+    status:
+      - test -f {{.KUBECTL_BIN}}
+    vars:
+      KUBECTL_BIN: "{{.KUBECTL_BIN_DIR}}/{{.KUBECTL_VERSION}}/kubectl"
+      KUBECTL_VERSION: 1.18.8
+
+# ISTIO
+  istioctl:install:1.7.0:
+    desc: istioctl install
+    cmds:
+      - mkdir -p {{.ISTIOCTL_BIN_DIR}}/{{.ISTIO_VERSION}} | true
+      - curl -o istioctl-{{.ISTIO_VERSION}}-osx.tar.gz -LO https://github.com/istio/istio/releases/download/{{.ISTIO_VERSION}}/istioctl-{{.ISTIO_VERSION}}-osx.tar.gz
+      - tar -xvzf istioctl-{{.ISTIO_VERSION}}-osx.tar.gz -C {{.ISTIOCTL_BIN_DIR}}/{{.ISTIO_VERSION}}
+      - rm istioctl-{{.ISTIO_VERSION}}-osx.tar.gz
+    status:
+      - test -f {{.ISTIOCTL_BIN}}
+    vars:
+      ISTIOCTL_BIN: "{{.ISTIOCTL_BIN_DIR}}/{{.ISTIO_VERSION}}/istioctl"
+      ISTIO_VERSION: 1.7.0
